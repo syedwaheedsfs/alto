@@ -137,7 +137,7 @@ const useStyles = makeStyles((theme) => ({
   },
   desc: {
     color: theme.palette.text.secondary,
-    paddingLeft: "15px",
+    paddingLeft: "3px",
   },
   secondsection: {
     display: "flex",
@@ -245,7 +245,11 @@ export default function FileManagerPage() {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Box className={classes.textcontent}>
-            <Typography variant="h6" gutterBottom className={classes.pageTitle}>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              className={classes.pageTitle}
+            >
               Join the next Attio workshop on July 1
             </Typography>
 
@@ -259,7 +263,10 @@ export default function FileManagerPage() {
             <Box className={classes.mainsearchbar}>
               <Searchbar
                 width={550}
-                style={{ padding: "9px" , boxShadow: "0.4px 1.4px 3px lightgrey",}}
+                style={{
+                  padding: "9px",
+                  boxShadow: "0.4px 1.4px 3px lightgrey",
+                }}
               />
             </Box>
 

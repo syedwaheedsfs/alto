@@ -58,10 +58,12 @@ export default function CompactSearch({
       <SearchIcon color="action" />
       <InputBase
         className={classes.input}
-        placeholder="Search help"
+        placeholder="search help(e.g.integrations, importing, or billing)"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        inputProps={{ "aria-label": "search help" }}
+        inputProps={{
+          "aria-label": "search help",
+        }}
       />
       <Box className={classes.adornment}>⌘ </Box>
       <Box className={classes.adornment}>K </Box>

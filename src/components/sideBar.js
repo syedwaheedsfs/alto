@@ -39,10 +39,20 @@ const useStyles = makeStyles((theme) => ({
   },
   nestedDeep: {
     color: theme.palette.text.secondary,
-    paddingLeft: theme.spacing(6),
+    paddingLeft: theme.spacing(2.8),
+    paddingTop:0
   },
   sidesearchbar: {
     paddingLeft: theme.spacing(6),
+  },
+  connector: {
+    borderLeft: `1px solid ${theme.palette.divider}`,
+    marginLeft: theme.spacing(1),
+    //  paddingLeft: theme.spacing(0),
+    marginLeft: "45px",
+  },
+  sidebartext: {
+    paddingLeft: theme.spacing(1.5),
   },
 }));
 
@@ -130,11 +140,14 @@ export default function Sidebar() {
                           onClick={() => toggleItem(id, label)}
                         >
                           {openItems[itemKey] ? (
-                            <ExpandMore /> // down when open
+                            <ExpandMore fontSize="small" /> // down when open
                           ) : (
-                            <ChevronRightOutlinedIcon />
+                            <ChevronRightOutlinedIcon fontSize="small" />
                           )}
-                          <ListItemText primary={label} />
+                          <ListItemText
+                            primary={label}
+                            className={classes.sidebartext}
+                          />
                         </ListItem>
 
                         {/* labelitems (deep) */}
@@ -143,17 +156,20 @@ export default function Sidebar() {
                           timeout="auto"
                           unmountOnExit
                         >
-                          <List disablePadding>
-                            {labelitems.map((deep) => (
-                              <ListItem
-                                key={deep}
-                                button
-                                className={classes.nestedDeep}
-                              >
-                                <ListItemText primary={deep} />
-                              </ListItem>
-                            ))}
-                          </List>
+                          <Box className={classes.connector}>
+                            <List disablePadding>
+                              {labelitems.map((deep) => (
+                                <ListItem
+                                  key={deep}
+                                  button
+                                  // dense
+                                  className={classes.nestedDeep}
+                                >
+                                  <ListItemText primary={deep} />
+                                </ListItem>
+                              ))}
+                            </List>
+                          </Box>
                         </Collapse>
                       </React.Fragment>
                     );
