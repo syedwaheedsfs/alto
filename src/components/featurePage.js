@@ -9,19 +9,16 @@ import Logo from "./Assets/smartfoodlogo.png";
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 import { Link as RouterLink } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 import Test from "./sideBar";
 import Searchbar from "./searchBar";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import SchoolIcon from "@material-ui/icons/School";
-import AppsIcon from "@material-ui/icons/Apps";
-import ApiIcon from "@material-ui/icons/SyncAlt";
 import Divider from "@material-ui/core/Divider";
 import {ListItemText} from "@material-ui/core";
 import Footer from "./footer"
 import {images} from "./Assets/imageAlbum"
+import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -53,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    paddingTop: "140px",
+    paddingTop: theme.spacing(10),
     textAlign: "center",
     paddingLeft: "110px",
   },
@@ -99,14 +96,13 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: "24px",
   },
   sidebarNav: {
-    alignSelf: "flex-start", // keep it top‑aligned in the flex container
-    position: "sticky", // this is the magic
-    top: theme.mixins.toolbar.minHeight, // “stick” just below your AppBar
-    // width: 240,
+    alignSelf: "flex-start",
+    position: "sticky",
+    top: theme.mixins.toolbar.minHeight,
   },
   card: {
     height: "100%",
-    borderRadius: theme.spacing(1),
+    borderRadius: theme.spacing(2),
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
@@ -114,38 +110,33 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     border: `1px solid ${theme.palette.divider}`,
     boxShadow: "none",
+    width: 267,
+    height: 128,
   },
   iconBox: {
-    // marginRight: theme.spacing(2),
-    // marginBottom: theme.spacing(1.5),
-    // // "& svg": {
-    // //   fontSize: 40,
-    // //   color: theme.palette.text.primary,
-    // // },
-    // paddingLeft: "15px",
-    marginLeft: 14,
+    paddingLeft: theme.spacing(1.2),
     width: 40,
     height: 38,
+    paddingTop: theme.spacing(2),
   },
   title: {
-    fontWeight: 600,
+    fontWeight: 500,
     // marginBottom: theme.spacing(1),
-    paddingLeft: "17px",
+    paddingLeft: theme.spacing(1.7),
     paddingTop: theme.spacing(1),
     display: "flex",
     alignItems: "flex-start",
   },
   desc: {
     color: theme.palette.text.secondary,
-    paddingLeft: "3px",
+    paddingLeft: theme.spacing(1.5),
   },
   secondsection: {
     display: "flex",
     width: "100%",
     alignItems: "flex-start",
-    // paddingTop: "50px",
     paddingTop: theme.spacing(15),
-    paddingBottom: theme.spacing(15),
+    paddingBottom: theme.spacing(19),
   },
   textcontent: {
     paddingBottom: theme.spacing(7),
@@ -153,6 +144,35 @@ const useStyles = makeStyles((theme) => ({
   mainsearchbar: {
     paddingLeft: theme.spacing(17),
     paddingBottom: theme.spacing(2),
+  },
+  listItem: {
+    position: "relative",
+    backgroundColor: "transparent !important",
+    "&:hover $bullet": {
+      border: `1px solid black`,
+      borderRadius: 10,
+      // padding: theme.spacing(0.5, 1),
+    },
+  },
+  bullet: {
+    minWidth: 24,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxSizing: "border-box",
+    transition: "outline 0.9s ease",
+    padding: theme.spacing(0.5, 1.3),
+    borderRadius: 10,
+    boxShadow: "1px 2px 3px lightgrey",
+    marginRight: theme.spacing(3),
+    marginTop: theme.spacing(3),
+  },
+  secondlistitems: {
+    paddingBottom: theme.spacing(3),
+    paddingTop: theme.spacing(3),
+  },
+  articlelink: {
+    color: theme.palette.text.secondary,
   },
 }));
 
@@ -194,7 +214,8 @@ const quickLinks = [
 
 
 
-export default function FileManagerPage() {
+export default function FileManagerPage({ children }) {
+  const [searchTerm, setSearchTerm] = useState("");
   const classes = useStyles();
   return (
     <div>
@@ -243,112 +264,146 @@ export default function FileManagerPage() {
         </div>
 
         <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <Box className={classes.textcontent}>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              className={classes.pageTitle}
-            >
-              Join the next Attio workshop on July 1
-            </Typography>
+          {/* <div className={classes.toolbar} /> */}
+          {children ? (
+            
+            children
+          ) : (
+           
+            <>
+              {/* <div className={classes.toolbar} /> */}
+              <Box className={classes.textcontent}>
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  className={classes.pageTitle}
+                >
+                  Join the next Attio workshop on July 1
+                </Typography>
 
-            <Typography variant="h2" gutterBottom className={classes.pageTitle}>
-              How can we help?
-            </Typography>
-            <Typography variant="h6" paragraph className={classes.updateDate}>
-              Get answers to common questions on all things Attio
-            </Typography>
-            {/* search bar import */}
-            <Box className={classes.mainsearchbar}>
-              <Searchbar
-                width={550}
-                style={{
-                  padding: "9px",
-                  boxShadow: "0.4px 1.4px 3px lightgrey",
-                }}
-              />
-            </Box>
-
-            <Typography paragraph>
-              Popular searches: importing billing integrations
-            </Typography>
-          </Box>
-
-          <Grid container spacing={3} style={{ paddingTop: "40px" }}>
-            {cards.map((c) => (
-              <Grid item xs={12} md={4} key={c.title}>
-                <Card className={classes.card}>
-                  {/* <Box className={classes.iconBox}>{c.icon}</Box> */}
-                  <img src={c.icon} alt={`icon`} className={classes.iconBox} />
-                  <CardContent style={{ padding: 0 }}>
-                    <Typography variant="h6" className={classes.title}>
-                      {c.title}
-                    </Typography>
-                    <Typography variant="body2" className={classes.desc}>
-                      {c.desc}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-
-          <Box mt={8} width="100%">
-            <Divider />
-          </Box>
-
-          <Box className={classes.secondsection}>
-            {/* Left column: the heading */}
-            <Box>
-              <Typography variant="h4">Get started with Attio 101.</Typography>
-
-              <Typography>
-                Everything you need to master the basics of Attio.
-              </Typography>
-            </Box>
-
-            {/* Right column: the list */}
-            <Box ml="auto" width="40%">
-              {" "}
-              <List disablePadding>
-                {quickLinks.map((art, idx) => (
-                  <ListItem
-                    key={art.to}
-                    button
-                    component={RouterLink}
-                    to={art.to}
-                    dense
-                  >
-                    <Box display="flex" alignItems="flex-start">
-                      {/* 1. The number “bullet” */}
-                      <Typography variant="body1" style={{ minWidth: 24 }}>
-                        {idx + 1}.
-                      </Typography>
-                      {/* 2. The content: title + desc, both starting flush under each other */}
-                      <Box ml={1}>
-                        <Typography variant="body1" style={{ fontWeight: 500 }}>
-                          {art.title}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                          {art.desc}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </ListItem>
-                ))}
-                <ListItem button component={RouterLink} to="/help" dense>
-                  <ListItemText
-                    primary="See all articles"
-                    primaryTypographyProps={{
-                      variant: "body2",
-                      style: { textDecoration: "underline" },
+                <Typography
+                  variant="h2"
+                  gutterBottom
+                  className={classes.pageTitle}
+                >
+                  How can we help?
+                </Typography>
+                <Typography
+                  variant="h6"
+                  paragraph
+                  className={classes.updateDate}
+                >
+                  Get answers to common questions on all things Attio
+                </Typography>
+                {/* search bar import */}
+                <Box className={classes.mainsearchbar}>
+                  <Searchbar
+                    width={550}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    style={{
+                      padding: "9px",
+                      boxShadow: "0.4px 1.4px 3px lightgrey",
                     }}
                   />
-                </ListItem>
-              </List>
-            </Box>
-          </Box>
+                </Box>
+
+                <Typography paragraph>
+                  Popular searches: importing billing integrations
+                </Typography>
+              </Box>
+
+              <Grid container spacing={10} style={{ paddingTop: "40px" }}>
+                {cards.map((c) => (
+                  <Grid item xs={12} md={4} key={c.title}>
+                    <Card className={classes.card}>
+                      <img
+                        src={c.icon}
+                        alt={`icon`}
+                        className={classes.iconBox}
+                      />
+                      <CardContent style={{ padding: 0 }}>
+                        <Typography variant="h6" className={classes.title}>
+                          {c.title}
+                        </Typography>
+                        <Typography variant="body2" className={classes.desc}>
+                          {c.desc}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+
+              <Box mt={8} width="100%">
+                <Divider />
+              </Box>
+
+              <Box className={classes.secondsection}>
+                {/* Left column: the heading */}
+                <Box>
+                  <Typography variant="h4">
+                    Get started with Attio 101.
+                  </Typography>
+
+                  <Typography>
+                    Everything you need to master the basics of Attio.
+                  </Typography>
+                </Box>
+
+                {/* Right column: the list */}
+                <Box ml="auto" width="40%">
+                  {" "}
+                  <List disablePadding>
+                    {quickLinks.map((art, idx) => (
+                      <ListItem
+                        key={art.to}
+                        button
+                        component={RouterLink}
+                        to={art.to}
+                        divider
+                        disableRipple
+                        disableTouchRipple
+                        className={classes.listItem}
+                      >
+                        <Box display="flex" alignItems="flex-start">
+                          {/* 1. The number “bullet” */}
+                          <Typography
+                            variant="body1"
+                            style={{ minWidth: 24 }}
+                            className={classes.bullet}
+                          >
+                            {idx + 1}
+                          </Typography>
+                          {/* 2. The content: title + desc, both starting flush under each other */}
+                          <Box ml={1} className={classes.secondlistitems}>
+                            <Typography
+                              variant="body1"
+                              style={{ fontWeight: 500 }}
+                            >
+                              {art.title}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              {art.desc}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </ListItem>
+                    ))}
+                    <ListItem button component={RouterLink} to="/help">
+                      <ListItemText
+                        primary="See all articles"
+                        primaryTypographyProps={{
+                          variant: "body2",
+                        }}
+                        className={classes.articlelink}
+                      />
+                    </ListItem>
+                  </List>
+                </Box>
+              </Box>
+            </>
+          )}
         </main>
       </Container>
       <Footer />

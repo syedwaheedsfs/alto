@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Searchbar from "./searchBar";
 import {
+  IconButton,
+  ListItemIcon,
   Box,
   List,
   ListItem,
@@ -13,6 +15,8 @@ import {
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
 import {images} from "./Assets/imageAlbum"
+import { useHistory } from "react-router-dom";
+
 const useStyles = makeStyles((theme) => ({
   nav: {
     position: "sticky",
@@ -25,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     borderRight: `1px solid ${theme.palette.divider}`,
   },
   nested: {
-    paddingLeft: theme.spacing(4.5),
+    paddingLeft: theme.spacing(2.3),
     color: theme.palette.text.secondary,
   },
   sectionheader: {
@@ -39,35 +43,52 @@ const useStyles = makeStyles((theme) => ({
   },
   nestedDeep: {
     color: theme.palette.text.secondary,
-    paddingLeft: theme.spacing(2.8),
-    paddingTop:0
+    paddingLeft: theme.spacing(3.5),
+    paddingTop: 0,
   },
   sidesearchbar: {
     paddingLeft: theme.spacing(6),
   },
   connector: {
     borderLeft: `1px solid ${theme.palette.divider}`,
-    marginLeft: theme.spacing(1),
-    //  paddingLeft: theme.spacing(0),
-    marginLeft: "45px",
+    marginLeft: theme.spacing(6),
   },
-  sidebartext: {
-    paddingLeft: theme.spacing(1.5),
+  tinyIcon: {
+    fontSize: "0.1rem",
+    borderRadius: 9,
+    padding: "5px",
+    "&:hover": {
+      backgroundColor: "rgb(232, 232, 234)",
+    },
+    marginLeft: theme.spacing(2),
+  },
+  nestedtext: {
+    fontSize: "12px",
+  },
+  dropdown: {
+    borderRadius: 7,
+    paddingLeft: theme.spacing(0),
+    paddingRight: theme.spacing(10),
+    "&:hover": {
+      backgroundColor: "rgb(232, 232, 234)",
+    },
+    
   },
 }));
 
 
 
 export default function Sidebar() {
+  const [searchTerm, setSearchTerm] = useState("");
   const sidebarSections = [
     {
       id: "academy",
       title: "ACADEMY",
       Icon: images.Academy,
       items: [
-        { label: "Introductions", labelitems: ["item1", "item3"] },
-        { label: "Workflows", labelitems: ["item2", "item5"] },
-        { label: "Sequences", labelitems: ["item6", "item7"] },
+        { label: "Introductions", labelitems: ["platform", "email"] },
+        { label: "Workflows", labelitems: ["customizing", "attributes"] },
+        { label: "Sequences", labelitems: ["data", "reports"] },
       ],
     },
     {
@@ -75,8 +96,8 @@ export default function Sidebar() {
       title: "REFERENCE",
       Icon: images.refernce,
       items: [
-        { label: "Attio 101", labelitems: ["one", "two", "three"] },
-        { label: "Managing your data", labelitems: ["four", "five", "six"] },
+        { label: "Attio 101", labelitems: ["call intelligence", "workflow", "notes"] },
+        { label: "Managing your data", labelitems: ["importing", "objects", "calender"] },
       ],
     },
     {
@@ -91,6 +112,7 @@ export default function Sidebar() {
   ];
 
   const classes = useStyles();
+  const hist = useHistory();
 
   // track which sections are open
   const [openSections, setOpenSections] = useState({});
@@ -108,7 +130,10 @@ export default function Sidebar() {
     <div>
       <nav className={classes.nav}>
         <Box className={classes.sidesearchbar}>
-          <Searchbar />
+          <Searchbar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
         </Box>
 
         {/* Sections */}
@@ -117,13 +142,17 @@ export default function Sidebar() {
             <React.Fragment key={id}>
               {/* Section header */}
               <ListSubheader className={classes.sectionheader}>
-                {/* <Icon style={{ marginRight: 8 }} /> */}
                 <img
                   src={Icon}
                   alt={`${title} icon`}
-                  style={{ marginRight: 8, width: 24, height: 24 }}
+                  style={{ marginRight: 8, width: 30, height: 30 }}
                 />
-                <Typography variant="subtitle2">{title}</Typography>
+                <Typography
+                  variant="subtitle2"
+                  style={{ fontSize: "12px", paddingTop: "6px" }}
+                >
+                  {title}
+                </Typography>
               </ListSubheader>
 
               {/* Section’s items */}
@@ -131,23 +160,38 @@ export default function Sidebar() {
                 <List disablePadding dense>
                   {items.map(({ label, labelitems }) => {
                     const itemKey = `${id}-${label}`;
+                    const isOpen = openItems[itemKey];
                     return (
                       <React.Fragment key={label}>
                         {/* Item label */}
-                        <ListItem
-                          button
-                          className={classes.nested}
-                          onClick={() => toggleItem(id, label)}
-                        >
-                          {openItems[itemKey] ? (
-                            <ExpandMore fontSize="small" /> // down when open
-                          ) : (
-                            <ChevronRightOutlinedIcon fontSize="small" />
-                          )}
-                          <ListItemText
-                            primary={label}
-                            className={classes.sidebartext}
-                          />
+                        <ListItem className={classes.nested}>
+                          {/* 1) Icon toggles collapse */}
+                          <ListItemIcon>
+                            <IconButton
+                              // size="small"
+                              className={classes.tinyIcon}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleItem(id, label);
+                              }}
+                            >
+                              {isOpen ? (
+                                <ExpandMore fontSize="small" />
+                              ) : (
+                                <ChevronRightOutlinedIcon fontSize="small" />
+                              )}
+                            </IconButton>
+                          </ListItemIcon>
+
+                          {/* 2) Text navigates */}
+                          <Box className={classes.dropdown}>
+                            <ListItemText
+                              primary={label}
+                              className={classes.sidebartext}
+                              style={{ cursor: "pointer" }}
+                              onClick={() => hist.push(`/your-route/${label}`)}
+                            />
+                          </Box>
                         </ListItem>
 
                         {/* labelitems (deep) */}
@@ -162,10 +206,15 @@ export default function Sidebar() {
                                 <ListItem
                                   key={deep}
                                   button
-                                  // dense
                                   className={classes.nestedDeep}
+                                  onClick={() =>
+                                    hist.push(`/help/${id}/${label}/${deep}`)
+                                  }
                                 >
-                                  <ListItemText primary={deep} />
+                                  <ListItemText
+                                    primary={deep}
+                                    className={classes.nestedtext}
+                                  />
                                 </ListItem>
                               ))}
                             </List>
