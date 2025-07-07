@@ -147,8 +147,6 @@ export default function CompactSearch({
           p={1}
           borderTop="1px solid #eee"
         >
-          <Typography variant="caption">↑ ↓ Navigate</Typography>
-          <Typography variant="caption">↵ Select</Typography>
           <Typography
             variant="caption"
             style={{ cursor: "pointer" }}

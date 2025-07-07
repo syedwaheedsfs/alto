@@ -1,4 +1,4 @@
-// components/IframePage.jsx
+// components/IframePage.js
 import React from "react";
 
 export default function IframePage() {

@@ -19,6 +19,8 @@ import {ListItemText} from "@material-ui/core";
 import Footer from "./footer"
 import {images} from "./Assets/imageAlbum"
 import { useState } from "react";
+import {sidebarSections} from "./api"
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -115,12 +117,13 @@ const useStyles = makeStyles((theme) => ({
   },
   iconBox: {
     paddingLeft: theme.spacing(1.2),
-    width: 40,
-    height: 38,
+    width: 34,
+    height: 30,
     paddingTop: theme.spacing(2),
   },
   title: {
-    fontWeight: 500,
+    fontWeight: 600,
+    fontSize:13,
     // marginBottom: theme.spacing(1),
     paddingLeft: theme.spacing(1.7),
     paddingTop: theme.spacing(1),
@@ -217,6 +220,40 @@ const quickLinks = [
 export default function FileManagerPage({ children }) {
   const [searchTerm, setSearchTerm] = useState("");
   const classes = useStyles();
+  const { section, heading, item } = useParams();
+
+  console.log("PARAMS:", { section, heading, item });
+  const slugify = (str) => str.toString().toLowerCase().replace(/\s+/g, ""); 
+
+      let dynamicContent = null;
+
+      if (section && heading && item) {
+        // find the matching submenu entry
+        const sec = sidebarSections.find(
+          (s) => slugify(s.id) === slugify(section)
+        );
+        console.log("FOUND section:", sec);
+        const menuObj = sec?.items.find(
+          (it) => slugify(it.menu.label) === slugify(heading)
+        );
+        console.log("FOUND menu:", menuObj);
+        const sub = menuObj?.subMenu.find(
+          (sm) => slugify(sm.label) === slugify(item)
+        );
+        console.log("FOUND sub:", sub);
+
+        if (sub?.content?.type === "HTML" ) {
+          dynamicContent = (
+            <div
+              dangerouslySetInnerHTML={{ __html: sub.content.data }}
+              style={{ width: "100%", height: "100%" }}
+            />
+          );
+        } else {
+          dynamicContent = <div>{sub?.content?.data}</div>;
+        }
+      }
+  
   return (
     <div>
       {/* navbar */}
@@ -265,11 +302,7 @@ export default function FileManagerPage({ children }) {
 
         <main className={classes.content}>
           {/* <div className={classes.toolbar} /> */}
-          {children ? (
-            
-            children
-          ) : (
-           
+          {dynamicContent || (
             <>
               {/* <div className={classes.toolbar} /> */}
               <Box className={classes.textcontent}>
@@ -314,11 +347,11 @@ export default function FileManagerPage({ children }) {
               </Box>
 
               <Grid container spacing={10} style={{ paddingTop: "40px" }}>
-                {cards.map((c) => (
+                {sidebarSections.map((c) => (
                   <Grid item xs={12} md={4} key={c.title}>
                     <Card className={classes.card}>
                       <img
-                        src={c.icon}
+                        src={c.Icon}
                         alt={`icon`}
                         className={classes.iconBox}
                       />

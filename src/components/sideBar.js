@@ -14,8 +14,8 @@ import {
 } from "@material-ui/core";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
-import {images} from "./Assets/imageAlbum"
 import { useHistory } from "react-router-dom";
+import {sidebarSections} from "./api"
 
 const useStyles = makeStyles((theme) => ({
   nav: {
@@ -80,39 +80,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Sidebar() {
   const [searchTerm, setSearchTerm] = useState("");
-  const sidebarSections = [
-    {
-      id: "academy",
-      title: "ACADEMY",
-      Icon: images.Academy,
-      items: [
-        { label: "Introductions", labelitems: ["platform", "email"] },
-        { label: "Workflows", labelitems: ["customizing", "attributes"] },
-        { label: "Sequences", labelitems: ["data", "reports"] },
-      ],
-    },
-    {
-      id: "reference",
-      title: "REFERENCE",
-      Icon: images.refernce,
-      items: [
-        { label: "Attio 101", labelitems: ["call intelligence", "workflow", "notes"] },
-        { label: "Managing your data", labelitems: ["importing", "objects", "calender"] },
-      ],
-    },
-    {
-      id: "Apps",
-      title: "Apps",
-      Icon: images.Apps,
-      items: [
-        { label: "User profile", labelitems: ["item1", "item2"] },
-        { label: "Organization", labelitems: ["item1", "item2"] },
-      ],
-    },
-  ];
-
   const classes = useStyles();
   const hist = useHistory();
+  const slug = (s) => s.replace(/\s+/g, "");
 
   // track which sections are open
   const [openSections, setOpenSections] = useState({});
@@ -130,10 +100,7 @@ export default function Sidebar() {
     <div>
       <nav className={classes.nav}>
         <Box className={classes.sidesearchbar}>
-          <Searchbar
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
+          <Searchbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </Box>
 
         {/* Sections */}
@@ -141,15 +108,15 @@ export default function Sidebar() {
           {sidebarSections.map(({ id, title, Icon, items }) => (
             <React.Fragment key={id}>
               {/* Section header */}
-              <ListSubheader className={classes.sectionheader}>
+              <ListSubheader disableSticky className={classes.sectionheader}>
                 <img
                   src={Icon}
                   alt={`${title} icon`}
-                  style={{ marginRight: 8, width: 30, height: 30 }}
+                  style={{ marginRight: 8, width: 29, height: 29 }}
                 />
                 <Typography
                   variant="subtitle2"
-                  style={{ fontSize: "12px", paddingTop: "6px" }}
+                  style={{ fontSize: "13px", paddingTop: "6px" }}
                 >
                   {title}
                 </Typography>
@@ -158,21 +125,20 @@ export default function Sidebar() {
               {/* Section’s items */}
               <ListItem in={openSections[id]} timeout="auto" unmountOnExit>
                 <List disablePadding dense>
-                  {items.map(({ label, labelitems }) => {
-                    const itemKey = `${id}-${label}`;
+                  {items.map(({ menu, subMenu }) => {
+                    const itemKey = `${id}-${menu.label}`;
                     const isOpen = openItems[itemKey];
                     return (
-                      <React.Fragment key={label}>
+                      <React.Fragment key={menu.label}>
                         {/* Item label */}
                         <ListItem className={classes.nested}>
                           {/* 1) Icon toggles collapse */}
                           <ListItemIcon>
                             <IconButton
-                              // size="small"
                               className={classes.tinyIcon}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                toggleItem(id, label);
+                                toggleItem(id, menu.label);
                               }}
                             >
                               {isOpen ? (
@@ -186,10 +152,12 @@ export default function Sidebar() {
                           {/* 2) Text navigates */}
                           <Box className={classes.dropdown}>
                             <ListItemText
-                              primary={label}
+                              primary={menu.label}
                               className={classes.sidebartext}
                               style={{ cursor: "pointer" }}
-                              onClick={() => hist.push(`/your-route/${label}`)}
+                              onClick={() =>
+                                hist.push(`${slug(id)}/${slug(menu.label)}`)
+                              }
                             />
                           </Box>
                         </ListItem>
@@ -202,17 +170,21 @@ export default function Sidebar() {
                         >
                           <Box className={classes.connector}>
                             <List disablePadding>
-                              {labelitems.map((deep) => (
+                              {subMenu.map((deep) => (
                                 <ListItem
-                                  key={deep}
+                                  key={deep.label}
                                   button
                                   className={classes.nestedDeep}
                                   onClick={() =>
-                                    hist.push(`/help/${id}/${label}/${deep}`)
+                                    hist.push(
+                                      `/help/${slug(id)}/${slug(
+                                        menu.label
+                                      )}/${slug(deep.label)}`
+                                    )
                                   }
                                 >
                                   <ListItemText
-                                    primary={deep}
+                                    primary={deep.label}
                                     className={classes.nestedtext}
                                   />
                                 </ListItem>
