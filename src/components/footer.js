@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Container,
@@ -13,7 +12,6 @@ const useStyles = makeStyles((theme) => ({
   footer: {
     borderTop: `1px solid ${theme.palette.divider}`,
     padding: theme.spacing(6, 0),
-    // marginTop: theme.spacing(0),
     position: "relative",
   },
   columnTitle: {
@@ -38,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
   },
   logo: {
     height: 40,
-    // width: "auto",
     paddingRight: "140px",
     paddingLeft: "40px",
   },
@@ -122,7 +119,7 @@ export default function Footer() {
             <img src={Logo} alt="smartfoodsafe" className={classes.logo} />
           </Box>
 
-          {/* Now put your Grid inside the same flex row */}
+          
           <Box flexGrow={1}>
             <Grid container spacing={1}>
               {columns.map((col) => (

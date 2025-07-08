@@ -1,4 +1,3 @@
-import React from "react";
 import { makeStyles} from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
@@ -7,15 +6,17 @@ import SearchIcon from "@material-ui/icons/Search";
 import clsx from "clsx";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText"; 
-import  { useState, useRef } from "react";
+import  {useState} from "react";
 import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
-import Dialog from "@material-ui/core/Dialog";   
+import Dialog from "@material-ui/core/Dialog";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";  
+import CancelIcon from "@material-ui/icons/Cancel"; 
 const useStyles = makeStyles((theme) => ({
   searchRoot: (props) => ({
     display: "flex",
     alignItems: "center",
-    // width: props.width || 230,
     width: "100%",
     maxWidth: props.width || 230,
     padding: props.padding || theme.spacing(0.6, 1),
@@ -32,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
     height: 25,
     lineHeight: theme.spacing(0.22),
     color: theme.palette.text.secondary,
-    // remove default MUI padding
     "& input": {
       padding: 0,
     },
@@ -47,6 +47,19 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     cursor: "default",
     boxShadow: "1px 3px 3px lightgrey",
+  },
+  searchdialog: {
+    borderRadius: 16,
+    padding: 0,
+    overflow: "hidden",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+  },
+  searchicon: {
+    marginRight: 8,
+  },
+  suggestionlist: {
+    maxHeight: 400,
+    overflowY: "auto",
   },
 }));
 
@@ -73,10 +86,12 @@ export default function CompactSearch({
 }) {
   const classes = useStyles({ width, padding });
   const [open, setOpen] = useState(false);
-  const anchorRef = useRef(null);
 
   const openDialog = () => setOpen(true);
-  const closeDialog = () => setOpen(false);
+  const closeDialog = () => {
+    setOpen(false);
+    setSearchTerm(""); 
+  }
 
   const handleSelect = (item) => {
     setSearchTerm(item);
@@ -97,14 +112,17 @@ export default function CompactSearch({
         <Box className={classes.adornment}>K </Box>
       </Paper>
 
+      {/* pop up searchbar */}
       <Dialog
         open={open}
         onClose={closeDialog}
         disableEscapeKeyDown={false}
         fullWidth
         maxWidth="sm"
+        className={classes.searchdialog}
         PaperProps={{
           style: {
+            // borderTop: "4px solid #1976d2",
             borderRadius: 16,
             padding: 0,
             overflow: "hidden",
@@ -112,6 +130,19 @@ export default function CompactSearch({
           },
         }}
       >
+        <Box
+          display="flex"
+          justifyContent="flex-end"
+          alignItems="center"
+          style={{ height: 48, backgroundColor: "rgba(77, 170, 251, 0.12)" }}
+          /* no extra border here: we put it on the PaperProps */
+        >
+          {/* could be a Search button or Cancel, swap icons as needed */}
+          <IconButton size="small" onClick={closeDialog}>
+            <CancelIcon />
+          </IconButton>
+        </Box>
+
         {/* Header */}
         <Box p={1} borderBottom="1px solid #eee">
           <InputBase
@@ -121,14 +152,14 @@ export default function CompactSearch({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             startAdornment={
-              <SearchIcon color="action" style={{ marginRight: 8 }} />
+              <SearchIcon color="action" className={classes.searchicon} />
             }
             inputProps={{ style: { fontSize: 14, padding: 8 } }}
           />
         </Box>
 
         {/* Body */}
-        <List style={{ maxHeight: 400, overflowY: "auto" }}>
+        <List className={classes.suggestionlist}>
           {suggestions
             .filter(
               (item) =>
@@ -142,8 +173,8 @@ export default function CompactSearch({
             ))}
         </List>
 
-        {/* Footer */}
-        <Box
+        {/* searchbar Footer */}
+        {/* <Box
           display="flex"
           justifyContent="space-between"
           alignItems="center"
@@ -155,9 +186,9 @@ export default function CompactSearch({
             style={{ cursor: "pointer" }}
             onClick={closeDialog}
           >
-            Esc Close
+            Close esc
           </Typography>
-        </Box>
+        </Box> */}
       </Dialog>
     </>
   );

@@ -20,7 +20,6 @@ import {
 } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    // zIndex: theme.zIndex.drawer + 1,
     backgroundColor: "#fff",
     color: "#000",
     borderBottom: `1px solid ${theme.palette.divider}`,
@@ -46,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "none",
     fontWeight: 500,
     "&:hover": {
-      backgroundColor: "#7b7bd3",
+      backgroundColor: "rgb(52, 52, 55)",
     },
     marginRight: theme.spacing(2),
   },
@@ -57,11 +56,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 4,
     textTransform: "none",
     fontWeight: 500,
-    "&:hover": {
-      backgroundColor: "rgb(174, 174, 229)",
-      borderColor: " #7b7bd3",
-      color: "#7b7bd3",
-    },
   },
   toolbar: {
     padding: 0,
@@ -140,12 +134,12 @@ export default function Navbar() {
         onClose={toggleDrawer(false)}
         classes={{ paper: classes.drawerPaper }}
       >
-        {/* You can include a close button at the top if you like */}
+        
         <List>
           <ListItem button onClick={toggleDrawer(false)}>
             Close
           </ListItem>
-          {/* Render your actual sidebar contents: */}
+         
           <Test />
         </List>
       </SwipeableDrawer>

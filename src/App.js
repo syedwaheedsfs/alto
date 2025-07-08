@@ -1,6 +1,5 @@
 import './App.css';
 import Featurepage from "./components/featurePage"
-import IframePage from './components/IframePage';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 function App() {
   // return <Featurepage />;

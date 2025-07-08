@@ -72,7 +72,18 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: "rgb(232, 232, 234)",
     },
-    
+  },
+  sidebarlogo: {
+    marginRight: 8,
+    width: 28,
+    height: 28,
+  },
+  sidebartitle: {
+    fontSize: "13px",
+    paddingTop: "6px",
+  },
+  sidebartext: {
+    cursor: "pointer",
   },
 }));
 
@@ -81,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Sidebar() {
   const [searchTerm, setSearchTerm] = useState("");
   const classes = useStyles();
-  const hist = useHistory();
+  const history = useHistory();
   const slug = (s) => s.replace(/\s+/g, "");
 
   // track which sections are open
@@ -89,8 +100,7 @@ export default function Sidebar() {
   // track which items (within sections) are open
   const [openItems, setOpenItems] = useState({});
 
-  // const toggleSection = (id) =>
-  //   setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
+  
   const toggleItem = (secId, label) => {
     const key = `${secId}-${label}`;
     setOpenItems((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -112,11 +122,11 @@ export default function Sidebar() {
                 <img
                   src={Icon}
                   alt={`${title} icon`}
-                  style={{ marginRight: 8, width: 29, height: 29 }}
+                  className={classes.sidebarlogo}
                 />
                 <Typography
                   variant="subtitle2"
-                  style={{ fontSize: "13px", paddingTop: "6px" }}
+                  className={classes.sidebartitle}
                 >
                   {title}
                 </Typography>
@@ -154,9 +164,8 @@ export default function Sidebar() {
                             <ListItemText
                               primary={menu.label}
                               className={classes.sidebartext}
-                              style={{ cursor: "pointer" }}
                               onClick={() =>
-                                hist.push(`${slug(id)}/${slug(menu.label)}`)
+                                history.push(`${slug(id)}/${slug(menu.label)}`)
                               }
                             />
                           </Box>
@@ -176,7 +185,7 @@ export default function Sidebar() {
                                   button
                                   className={classes.nestedDeep}
                                   onClick={() =>
-                                    hist.push(
+                                    history.push(
                                       `/help/${slug(id)}/${slug(
                                         menu.label
                                       )}/${slug(deep.label)}`
