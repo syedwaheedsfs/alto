@@ -1,13 +1,9 @@
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
+import { makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Box from "@material-ui/core/Box";
-import Logo from "./Assets/smartfoodlogo.png";
 import Container from "@material-ui/core/Container";
-import Button from "@material-ui/core/Button";
 import { Link as RouterLink } from "react-router-dom";
 import Test from "./sideBar";
 import Searchbar from "./searchBar";
@@ -17,85 +13,29 @@ import CardContent from "@material-ui/core/CardContent";
 import Divider from "@material-ui/core/Divider";
 import {ListItemText} from "@material-ui/core";
 import Footer from "./footer"
-import {images} from "./Assets/imageAlbum"
 import { useState } from "react";
 import {sidebarSections} from "./api"
 import { useParams } from "react-router-dom";
+import Hidden from "@material-ui/core/Hidden";
+import Navbar from "./navbar"
+
 
 const useStyles = makeStyles((theme) => ({
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: "#fff",
-    color: "#000",
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    boxShadow: "none",
-    paddingBottom: theme.spacing(1),
-  },
   pageWrapper: {
     display: "flex",
     width: "100%",
     paddingLeft: theme.spacing(2),
     alignItems: "flex-start",
     marginTop: theme.mixins.toolbar.minHeight,
-    // paddingBottom: 10,
     padding: "0px",
     margin: "0px",
-  },
-
-  toolbar: {
-    padding: 0,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    boxShadow: "none",
-    // border: "none",
   },
   content: {
     flexGrow: 1,
     paddingTop: theme.spacing(10),
     textAlign: "center",
-    paddingLeft: "110px",
-  },
-  toolbar: {
-    padding: 0,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    boxShadow: "none",
-    border: "none",
-  },
-  submitBtn: {
-    backgroundColor: "black",
-    color: "#ffffff",
-    borderRadius: 4,
-    textTransform: "none",
-    fontWeight: 500,
-    "&:hover": {
-      backgroundColor: "#7b7bd3",
-    },
-    marginRight: theme.spacing(2),
-  },
-  logoutBtn: {
-    marginRight: theme.spacing(2),
-    borderColor: "black",
-    color: "black",
-    borderRadius: 4,
-    textTransform: "none",
-    fontWeight: 500,
-    "&:hover": {
-      backgroundColor: "rgb(174, 174, 229)",
-      borderColor: " #7b7bd3",
-      color: "#7b7bd3",
-    },
-  },
-  logo: {
-    height: 50,
-    width: "auto",
-    paddingRight: "16px",
-    paddingLeft: "37px",
-  },
-  toolbarbuttons: {
-    paddingRight: "24px",
+    paddingLeft: theme.spacing(10),
+    justifyContent: "center",
   },
   sidebarNav: {
     alignSelf: "flex-start",
@@ -112,8 +52,13 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     border: `1px solid ${theme.palette.divider}`,
     boxShadow: "none",
-    width: 267,
-    height: 128,
+    width: "100%", 
+    maxWidth: 250,
+    height: 120,
+    margin: "0 auto",
+    [theme.breakpoints.down("md")]: {
+      justifyContent: "center",
+    },
   },
   iconBox: {
     paddingLeft: theme.spacing(1.2),
@@ -123,8 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontWeight: 600,
-    fontSize:13,
-    // marginBottom: theme.spacing(1),
+    fontSize: 13,
     paddingLeft: theme.spacing(1.7),
     paddingTop: theme.spacing(1),
     display: "flex",
@@ -145,7 +89,6 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(7),
   },
   mainsearchbar: {
-    paddingLeft: theme.spacing(17),
     paddingBottom: theme.spacing(2),
   },
   listItem: {
@@ -154,7 +97,6 @@ const useStyles = makeStyles((theme) => ({
     "&:hover $bullet": {
       border: `1px solid black`,
       borderRadius: 10,
-      // padding: theme.spacing(0.5, 1),
     },
   },
   bullet: {
@@ -177,25 +119,13 @@ const useStyles = makeStyles((theme) => ({
   articlelink: {
     color: theme.palette.text.secondary,
   },
+  cardGrid: {
+    justifyContent: "flex-start",
+    [theme.breakpoints.down("md")]: {
+      justifyContent: "center",
+    },
+  },
 }));
-
-const cards = [
-  {
-    icon: images.Academy,
-    title: "Academy",
-    desc: "Short videos to get started with Attio",
-  },
-  {
-    icon: images.refernce,
-    title: "Reference",
-    desc: "Essential Attio features explained",
-  },
-  {
-    icon: images.icons,
-    title: "API",
-    desc: "Technical guide to integrations",
-  },
-];
 
 const quickLinks = [
   {
@@ -215,6 +145,70 @@ const quickLinks = [
   },
 ];
 
+// at the top of FileManagerPage.js (or wherever you render dynamicContent)
+function renderPieces(pieces) {
+  // ensure we always have an array
+  const arr = Array.isArray(pieces) ? pieces : [pieces];
+
+  return arr.map((p, i) => {
+    switch (p.type) {
+      case "HTML":
+        return (
+          <div
+            key={i}
+            dangerouslySetInnerHTML={{ __html: p.data }}
+            style={{ width: "100%", height: "100%" }}
+          />
+        );
+
+      case "EXCEL":
+        return (
+          <iframe
+            key={i}
+            src={p.data.replace("/edit?", "/pubhtml?")}
+            width="100%"
+            height="600px"
+            title={`excel-${i}`}
+            style={{ border: 0 }}
+          />
+        );
+
+      case "PPT":
+        return (
+          <iframe
+            key={i}
+            src={p.data}
+            width="100%"
+            height="600px"
+            title={`ppt-${i}`}
+            style={{ border: 0 }}
+          />
+        );
+
+      case "WORD":
+        return (
+          <iframe
+            key={i}
+            src={p.data}
+            width="100%"
+            height="600px"
+            title={`word-${i}`}
+            style={{ border: 0 }}
+          />
+        );
+
+      // add more cases here (PDF, IFRAME, VIDEO, etc.)
+
+      default:
+        // fallback: just print raw data
+        return (
+          <div key={i} style={{ padding: 16 }}>
+            {p.data}
+          </div>
+        );
+    }
+  });
+}
 
 
 export default function FileManagerPage({ children }) {
@@ -228,83 +222,85 @@ export default function FileManagerPage({ children }) {
       let dynamicContent = null;
 
       if (section && heading && item) {
-        // find the matching submenu entry
+     
         const sec = sidebarSections.find(
           (s) => slugify(s.id) === slugify(section)
         );
-        console.log("FOUND section:", sec);
+      
         const menuObj = sec?.items.find(
           (it) => slugify(it.menu.label) === slugify(heading)
         );
-        console.log("FOUND menu:", menuObj);
+       
         const sub = menuObj?.subMenu.find(
           (sm) => slugify(sm.label) === slugify(item)
         );
-        console.log("FOUND sub:", sub);
+       
 
-        if (sub?.content?.type === "HTML" ) {
-          dynamicContent = (
-            <div
-              dangerouslySetInnerHTML={{ __html: sub.content.data }}
-              style={{ width: "100%", height: "100%" }}
-            />
-          );
-        } else {
-          dynamicContent = <div>{sub?.content?.data}</div>;
+        // if (sub?.content?.type === "HTML") {
+        //   dynamicContent = (
+        //     <div
+        //       dangerouslySetInnerHTML={{ __html: sub.content.data }}
+        //       style={{ width: "100%", height: "100%" }}
+        //     />
+        //   );
+        // } else if (sub?.content?.type === "EXCEL") {
+        //   dynamicContent = (
+        //     <iframe
+        //       src={sub.content.data.replace("/edit?", "/pubhtml?")}
+        //       width="100%"
+        //       height="600px"
+        //       title="Excel Preview"
+        //       style={{ border: 0 }}
+        //     />
+        //   );
+        // } else if (sub?.content?.type === "PPT") {
+        //   dynamicContent = (
+        //     <iframe
+        //       src={sub.content.data}
+        //       width="100%"
+        //       height="600px"
+        //       title="PPT Preview"
+        //       style={{ border: 0 }}
+        //     />
+        //   );
+        // } else if (sub?.content?.type === "WORD") {
+        //   dynamicContent = (
+        //     <iframe
+        //       src={sub.content.data}
+        //       width="100%"
+        //       height="600px"
+        //       title="WORD Preview"
+        //       style={{ border: 0 }}
+        //     />
+        //   );
+        // } else {
+        //   dynamicContent = <div>{sub?.content?.data}</div>;
+        // }
+
+        if (sub && sub.content) {
+          dynamicContent = <>{renderPieces(sub.content)}</>;
         }
       }
   
   return (
     <div>
-      {/* navbar */}
-      <AppBar position="fixed" className={classes.appBar}>
-        <Container maxWidth="xl">
-          <Toolbar className={classes.toolbar}>
-            <Box display="flex" alignItems="center">
-              <Box>
-                <img src={Logo} alt="smartfoodsafe" className={classes.logo} />
-              </Box>
-
-              <Button component={RouterLink} to="/" color="inherit">
-                Platform
-              </Button>
-              <Button color="inherit">Resources</Button>
-              <Button color="inherit">Customers</Button>
-              <Button color="inherit">Pricing</Button>
-            </Box>
-
-            <Box className={classes.toolbarbuttons}>
-              <Button
-                variant="outlined"
-                size="small"
-                className={classes.logoutBtn}
-              >
-                Sign in
-              </Button>
-              <Button
-                variant="contained"
-                size="small"
-                className={classes.submitBtn}
-              >
-                Start for free
-              </Button>
-            </Box>
-          </Toolbar>
-        </Container>
-      </AppBar>
+      {/*import navbar */}
+      <Navbar/>
 
       <Container maxWidth="lg" className={classes.pageWrapper}>
-        {/* <Toolbar /> */}
+    
         {/* import side bar component */}
-        <div className={classes.sidebarNav}>
-          <Test />
-        </div>
+        <Hidden smDown>
+          <div className={classes.sidebarNav}>
+            <Test />
+          </div>
+        </Hidden>
 
         <main className={classes.content}>
-          {/* <div className={classes.toolbar} /> */}
+          
           {dynamicContent || (
             <>
-              {/* <div className={classes.toolbar} /> */}
+             
               <Box className={classes.textcontent}>
                 <Typography
                   variant="subtitle1"
@@ -346,7 +342,11 @@ export default function FileManagerPage({ children }) {
                 </Typography>
               </Box>
 
-              <Grid container spacing={10} style={{ paddingTop: "40px" }}>
+              <Grid
+                container
+                spacing={3}
+                className={classes.cardGrid}
+              >
                 {sidebarSections.map((c) => (
                   <Grid item xs={12} md={4} key={c.title}>
                     <Card className={classes.card}>
@@ -372,9 +372,13 @@ export default function FileManagerPage({ children }) {
                 <Divider />
               </Box>
 
-              <Box className={classes.secondsection}>
+              <Box
+                className={classes.secondsection}
+                flexDirection={{ xs: "column", md: "row" }}
+                p={{ xs: 2, md: 0 }}
+              >
                 {/* Left column: the heading */}
-                <Box>
+                <Box mb={{ xs: 4, md: 0 }}>
                   <Typography variant="h4">
                     Get started with Attio 101.
                   </Typography>
@@ -385,7 +389,10 @@ export default function FileManagerPage({ children }) {
                 </Box>
 
                 {/* Right column: the list */}
-                <Box ml="auto" width="40%">
+                <Box
+                  ml={{ xs: 0, md: "auto" }}
+                  width={{ xs: "100%", md: "40%" }}
+                >
                   {" "}
                   <List disablePadding>
                     {quickLinks.map((art, idx) => (
@@ -400,7 +407,7 @@ export default function FileManagerPage({ children }) {
                         className={classes.listItem}
                       >
                         <Box display="flex" alignItems="flex-start">
-                          {/* 1. The number “bullet” */}
+                          {/* The number “bullet” */}
                           <Typography
                             variant="body1"
                             style={{ minWidth: 24 }}
@@ -408,7 +415,7 @@ export default function FileManagerPage({ children }) {
                           >
                             {idx + 1}
                           </Typography>
-                          {/* 2. The content: title + desc, both starting flush under each other */}
+                          {/* The content: title + desc */}
                           <Box ml={1} className={classes.secondlistitems}>
                             <Typography
                               variant="body1"

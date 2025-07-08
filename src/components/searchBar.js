@@ -15,11 +15,14 @@ const useStyles = makeStyles((theme) => ({
   searchRoot: (props) => ({
     display: "flex",
     alignItems: "center",
-    width: props.width || 230,
+    // width: props.width || 230,
+    width: "100%",
+    maxWidth: props.width || 230,
     padding: props.padding || theme.spacing(0.6, 1),
     borderRadius: theme.shape.borderRadius * 3,
     border: `1px solid ${theme.palette.divider}`,
     backgroundColor: theme.palette.background.paper,
+    margin: "0 auto",
   }),
   input: {
     textAlign: "left",

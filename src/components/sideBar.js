@@ -89,8 +89,8 @@ export default function Sidebar() {
   // track which items (within sections) are open
   const [openItems, setOpenItems] = useState({});
 
-  const toggleSection = (id) =>
-    setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
+  // const toggleSection = (id) =>
+  //   setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
   const toggleItem = (secId, label) => {
     const key = `${secId}-${label}`;
     setOpenItems((prev) => ({ ...prev, [key]: !prev[key] }));

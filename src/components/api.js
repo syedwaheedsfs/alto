@@ -22,7 +22,13 @@ export const sidebarSections = [
                 ></iframe>`,
             },
           },
-          { label: "Question2", content: { type: "HTML", data: `` } },
+          {
+            label: "Question2",
+            content: {
+              type: "EXCEL",
+              data: `https://docs.google.com/spreadsheets/d/e/2PACX-1vQsFoDqWv7O4LwihJMSpFwfQWyq8IYT0HTYF2EWy2Jd6Q1xZBISnFZfVMdlmR-PkGdnttrDLxPCcDNg/pubhtml`,
+            },
+          },
         ],
       },
       {
@@ -31,8 +37,20 @@ export const sidebarSections = [
           content: { type: "HTML", data: `` },
         },
         subMenu: [
-          { label: "Question1", content: { type: "HTML", data: `` } },
-          { label: "Question2", content: { type: "HTML", data: `` } },
+          {
+            label: "Question1",
+            content: {
+              type: "PPT",
+              data: `https://docs.google.com/presentation/d/e/2PACX-1vQ1Z8MvMHZBQif5OolRInMzG7cb8Ggt3H3ZX2K4tUegcIvraoSmGJtkth43KNkZ7w/pubembed?start=false&loop=false&delayms=3000`,
+            },
+          },
+          {
+            label: "Question2",
+            content: {
+              type: "WORD",
+              data: `https://docs.google.com/document/d/1MXOkWkhF0Y5NFrVLXWB1Q3JQOZ2lbs2L/edit?usp=drive_link&ouid=106600566939457943450&rtpof=true&sd=true`,
+            },
+          },
         ],
       },
       {
@@ -41,7 +59,23 @@ export const sidebarSections = [
           content: { type: "HTML", data: `` },
         },
         subMenu: [
-          { label: "Question1", content: { type: "HTML", data: `` } },
+          {
+            label: "Question1",
+            content: [
+              {
+                type: "WORD",
+                data: `https://docs.google.com/document/d/1MXOkWkhF0Y5NFrVLXWB1Q3JQOZ2lbs2L/edit?usp=drive_link&ouid=106600566939457943450&rtpof=true&sd=true`,
+              },
+              {
+                type: "PPT",
+                data: `https://docs.google.com/presentation/d/e/2PACX-1vQ1Z8MvMHZBQif5OolRInMzG7cb8Ggt3H3ZX2K4tUegcIvraoSmGJtkth43KNkZ7w/pubembed?start=false&loop=false&delayms=3000`,
+              },
+              {
+                type: "EXCEL",
+                data: `https://docs.google.com/spreadsheets/d/e/2PACX-1vQsFoDqWv7O4LwihJMSpFwfQWyq8IYT0HTYF2EWy2Jd6Q1xZBISnFZfVMdlmR-PkGdnttrDLxPCcDNg/pubhtml`,
+              },
+            ],
+          },
           { label: "Question2", content: { type: "HTML", data: `` } },
         ],
       },
