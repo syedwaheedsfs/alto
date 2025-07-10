@@ -1,18 +1,16 @@
-import { makeStyles} from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import InputBase from "@material-ui/core/InputBase";
-import Box from "@material-ui/core/Box";
-import SearchIcon from "@material-ui/icons/Search";
-import clsx from "clsx";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText"; 
-import  {useState} from "react";
-import Typography from "@material-ui/core/Typography";
-import List from "@material-ui/core/List";
-import Dialog from "@material-ui/core/Dialog";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";  
-import CancelIcon from "@material-ui/icons/Cancel"; 
+import { dynamicimports } from "../imports";
+import SearchDialog from "./search_dialog"
+import { sidebarSections } from "./api"; 
+ const { 
+  makeStyles,
+  Box,
+  useState,
+  Paper,
+  SearchIcon,
+  clsx,
+  Typography, 
+ } = dynamicimports;
+
 const useStyles = makeStyles((theme) => ({
   searchRoot: (props) => ({
     display: "flex",
@@ -63,6 +61,37 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+ 
+const slugify = (text) =>
+  text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "");
+
+// build flat list of { label, path } from sidebarSections
+const buildSuggestions = () =>
+  sidebarSections.flatMap(({ id, items }) => {
+    const sectionSlug = slugify(id);
+    return items.flatMap(({ menu, subMenu }) => {
+      const baseSlug = slugify(menu.label);
+      const list = [
+        { label: menu.label, path: `/help/${sectionSlug}/${baseSlug}` },
+      ];
+      if (Array.isArray(subMenu)) {
+        subMenu.forEach((sub) => {
+          list.push({
+            label: sub.label,
+            path: `/help/${sectionSlug}/${baseSlug}/${slugify(sub.label)}`,
+          });
+        });
+      }
+      return list;
+    });
+  });
+
+
 export default function CompactSearch({
   searchTerm,
   setSearchTerm,
@@ -70,22 +99,10 @@ export default function CompactSearch({
   style,
   width,
   padding,
-  suggestions = [
-    "Introduction",
-    "Automations billing",
-    "Objects",
-    "Understanding Attio's data model",
-    "Introduction to navigating Attio",
-    "Introduction to data importing",
-    "Typeform app",
-    "Tasks",
-    "Create a workflow",
-    "Attio Chrome extension",
-    "Merge and delete records",
-  ],
 }) {
   const classes = useStyles({ width, padding });
   const [open, setOpen] = useState(false);
+  const suggestions = buildSuggestions();
 
   const openDialog = () => setOpen(true);
   const closeDialog = () => {
@@ -112,84 +129,13 @@ export default function CompactSearch({
         <Box className={classes.adornment}>K </Box>
       </Paper>
 
-      {/* pop up searchbar */}
-      <Dialog
+      <SearchDialog
         open={open}
         onClose={closeDialog}
-        disableEscapeKeyDown={false}
-        fullWidth
-        maxWidth="sm"
-        className={classes.searchdialog}
-        PaperProps={{
-          style: {
-            // borderTop: "4px solid #1976d2",
-            borderRadius: 16,
-            padding: 0,
-            overflow: "hidden",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-          },
-        }}
-      >
-        <Box
-          display="flex"
-          justifyContent="flex-end"
-          alignItems="center"
-          style={{ height: 48, backgroundColor: "rgba(77, 170, 251, 0.12)" }}
-          /* no extra border here: we put it on the PaperProps */
-        >
-          {/* could be a Search button or Cancel, swap icons as needed */}
-          <IconButton size="small" onClick={closeDialog}>
-            <CancelIcon />
-          </IconButton>
-        </Box>
-
-        {/* Header */}
-        <Box p={1} borderBottom="1px solid #eee">
-          <InputBase
-            fullWidth
-            autoFocus
-            placeholder="Search help (e.g. integrations, importing, billing)"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            startAdornment={
-              <SearchIcon color="action" className={classes.searchicon} />
-            }
-            inputProps={{ style: { fontSize: 14, padding: 8 } }}
-          />
-        </Box>
-
-        {/* Body */}
-        <List className={classes.suggestionlist}>
-          {suggestions
-            .filter(
-              (item) =>
-                item &&
-                item.toLowerCase().includes((searchTerm || "").toLowerCase())
-            )
-            .map((item) => (
-              <ListItem button key={item} onClick={() => handleSelect(item)}>
-                <ListItemText primary={item} />
-              </ListItem>
-            ))}
-        </List>
-
-        {/* searchbar Footer */}
-        {/* <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          p={1}
-          borderTop="1px solid #eee"
-        >
-          <Typography
-            variant="caption"
-            style={{ cursor: "pointer" }}
-            onClick={closeDialog}
-          >
-            Close esc
-          </Typography>
-        </Box> */}
-      </Dialog>
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        suggestions={suggestions}
+      />
     </>
   );
 }

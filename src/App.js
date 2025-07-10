@@ -1,8 +1,9 @@
 import './App.css';
 import Featurepage from "./components/featurePage"
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { dynamicimports } from "./imports";
+const { Router, Switch, Route } = dynamicimports;
+
 function App() {
-  // return <Featurepage />;
   return (
     <Router>
       <Switch>
@@ -10,9 +11,11 @@ function App() {
           path="/help/:section/:heading/:item"
           render={() => <Featurepage />}
         />
+        <Route path="/help/:section/:heading" render={() => <Featurepage />} />
+        <Route path="/help/:section" render={() => <Featurepage />} />
 
         <Route exact path="/" render={() => <Featurepage />} />
-        <Route render={() => <div>404: Not found</div>} />
+        <Route render={() => <div>this is page for search suggestions</div>} />
       </Switch>
     </Router>
   );

@@ -1,28 +1,33 @@
-import { makeStyles} from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import Box from "@material-ui/core/Box";
-import Container from "@material-ui/core/Container";
-import { Link as RouterLink } from "react-router-dom";
 import Test from "./sideBar";
 import Searchbar from "./searchBar";
-import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import Divider from "@material-ui/core/Divider";
-import {ListItemText} from "@material-ui/core";
 import Footer from "./footer"
-import { useState } from "react";
 import {sidebarSections} from "./api"
-import { useParams } from "react-router-dom";
-import Hidden from "@material-ui/core/Hidden";
 import Navbar from "./navbar"
 import HtmlViewer from "./htmlViewer";
 import ExcelViewer from "./excelViewer";
 import PptViewer from "./pptViewer";
 import WordViewer from "./wordViewer";
-import clsx from "clsx"; 
+import {dynamicimports} from "../imports"
+
+ const {
+     makeStyles,
+     Typography,
+     List,
+     ListItem,
+     Box,
+     Container,
+     RouterLink,
+     Grid,
+     Card,
+     CardContent,
+     Divider,
+     ListItemText,
+     useState,
+     useParams,
+     Hidden,
+     clsx,
+   } = dynamicimports;
+
 const useStyles = makeStyles((theme) => ({
   pageWrapper: {
     display: "flex",
@@ -139,8 +144,6 @@ const useStyles = makeStyles((theme) => ({
     padding: 20,
     margin: 0,
     width: "100%",
-    // if you want it to go under the toolbar/nav too:
-    // marginTop: -theme.mixins.toolbar.minHeight,
   },
 }));
 
@@ -192,11 +195,15 @@ export default function FileManagerPage({ }) {
   const classes = useStyles();
   const { section, heading, item } = useParams();
 
-  // const containerProps = dynamicContent
-  //   ? { maxWidth: false, disableGutters: true }
-  //   : { maxWidth: "lg" };
 
-  const slugify = (str) => str.toString().toLowerCase().replace(/\s+/g, ""); 
+  // const slugify = (str) => str.toString().toLowerCase().replace(/\s+/g, ""); 
+  const slugify = (text) =>
+      text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-")        // spaces → hyphens
+        .replace(/[^\w\-]+/g, ""); 
 
       let dynamicContent = null;
 

@@ -1,21 +1,27 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import Searchbar from "./searchBar";
-import {
-  IconButton,
-  ListItemIcon,
-  Box,
-  List,
-  ListItem,
-  ListItemText,
-  ListSubheader,
-  Collapse,
-  Typography,
-} from "@material-ui/core";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
-import { useHistory } from "react-router-dom";
 import {sidebarSections} from "./api"
+import { dynamicimports } from "../imports";
+
+ const {
+   makeStyles,
+   List,
+   ListItem,
+   Box,
+   useState,
+   IconButton,
+   React,
+   ListItemIcon,
+   ListItemText,
+   ListSubheader,
+   Collapse,
+   Typography,
+   ExpandMore,
+   ChevronRightOutlinedIcon,
+   useHistory,
+   useEffect,
+   useParams,
+   clsx,
+ } = dynamicimports;
 
 const useStyles = makeStyles((theme) => ({
   nav: {
@@ -85,6 +91,10 @@ const useStyles = makeStyles((theme) => ({
   sidebartext: {
     cursor: "pointer",
   },
+  activeItem: {
+    borderLeft: `4px solid ${theme.palette.text.primary}`,
+    backgroundColor: theme.palette.action.selected,
+  },
 }));
 
 
@@ -93,14 +103,36 @@ export default function Sidebar() {
   const [searchTerm, setSearchTerm] = useState("");
   const classes = useStyles();
   const history = useHistory();
-  const slug = (s) => s.replace(/\s+/g, "");
+  const { section, heading, item } = useParams();
+  const slug = (text) =>
+    text
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-") // spaces → hyphens
+      .replace(/[^\w\-]+/g, "");
 
   // track which sections are open
   const [openSections, setOpenSections] = useState({});
   // track which items (within sections) are open
   const [openItems, setOpenItems] = useState({});
 
-  
+  useEffect(() => {
+    if (section && heading) {
+      // find matching menu label to open
+      sidebarSections.forEach(({ id, items }) => {
+        if (slug(id) === section) {
+          items.forEach(({ menu }) => {
+            if (slug(menu.label) === heading) {
+              const key = `${id}-${menu.label}`;
+              setOpenItems((prev) => ({ ...prev, [key]: true }));
+            }
+          });
+        }
+      });
+    }
+  }, [section, heading]);
+
   const toggleItem = (secId, label) => {
     const key = `${secId}-${label}`;
     setOpenItems((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -115,7 +147,10 @@ export default function Sidebar() {
 
         {/* Sections */}
         <List disablePadding className={classes.sidebarlist}>
-          {sidebarSections.map(({ id, title, Icon, items }) => (
+          {sidebarSections.map(({ id, title, Icon, items }) => {
+             const sectionSlug = slug(id);
+             const isSectionActive = sectionSlug === section;
+            return(
             <React.Fragment key={id}>
               {/* Section header */}
               <ListSubheader disableSticky className={classes.sectionheader}>
@@ -136,12 +171,21 @@ export default function Sidebar() {
               <ListItem in={openSections[id]} timeout="auto" unmountOnExit>
                 <List disablePadding dense>
                   {items.map(({ menu, subMenu }) => {
+                    const menuSlug = slug(menu.label);
+                    const isActiveMenu =
+                    isSectionActive && menuSlug === heading;
                     const itemKey = `${id}-${menu.label}`;
                     const isOpen = openItems[itemKey];
                     return (
                       <React.Fragment key={menu.label}>
                         {/* Item label */}
-                        <ListItem className={classes.nested}>
+                        <ListItem
+                         className={classes.nested}
+                        //  className={clsx(
+                        //      classes.nested,
+                        //       isActiveMenu && classes.activeItem
+                        //     )}
+                        >
                           {/* 1) Icon toggles collapse */}
                           <ListItemIcon>
                             <IconButton
@@ -179,11 +223,19 @@ export default function Sidebar() {
                         >
                           <Box className={classes.connector}>
                             <List disablePadding>
-                              {subMenu.map((deep) => (
+                              {subMenu.map((deep) => {
+                                const deepSlug = slug(deep.label);
+                                const isActiveDeep =
+                                  isActiveMenu && deepSlug === item;
+                                return(
                                 <ListItem
                                   key={deep.label}
                                   button
-                                  className={classes.nestedDeep}
+                                  // className={classes.nestedDeep}
+                                  className={clsx(
+                                         classes.nestedDeep,
+                                         isActiveDeep && classes.activeItem
+                                       )}
                                   onClick={() =>
                                     history.push(
                                       `/help/${slug(id)}/${slug(
@@ -197,7 +249,8 @@ export default function Sidebar() {
                                     className={classes.nestedtext}
                                   />
                                 </ListItem>
-                              ))}
+                                )
+                  })}
                             </List>
                           </Box>
                         </Collapse>
@@ -207,7 +260,8 @@ export default function Sidebar() {
                 </List>
               </ListItem>
             </React.Fragment>
-          ))}
+            );
+})}
         </List>
       </nav>
     </div>

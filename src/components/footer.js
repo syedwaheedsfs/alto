@@ -1,12 +1,13 @@
-import {
-  Box,
-  Container,
-  Grid,
-  Typography,
-  Link,
-  makeStyles,
-} from "@material-ui/core";
-import Logo from "./Assets/smartfoodlogo.png";
+import {images} from "./Assets/imageAlbum";
+import { dynamicimports } from "../imports";
+ const {
+     makeStyles,
+     Typography,
+     Box,
+     Container,
+     Link,
+     Grid, 
+   } = dynamicimports;
 
 const useStyles = makeStyles((theme) => ({
   footer: {
@@ -112,14 +113,12 @@ export default function Footer() {
       component="footer"
       bgcolor="background.paper"
     >
-      <Container maxWidth="xl" >
-
+      <Container maxWidth="xl">
         <Box display="flex" alignItems="flex-start" flexWrap="nowrap" mb={4}>
           <Box mr={2}>
-            <img src={Logo} alt="smartfoodsafe" className={classes.logo} />
+            <img src={images.smartfoodlogo} alt="smartfoodsafe" className={classes.logo} />
           </Box>
 
-          
           <Box flexGrow={1}>
             <Grid container spacing={1}>
               {columns.map((col) => (

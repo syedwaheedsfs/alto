@@ -1,23 +1,25 @@
-import Box from "@material-ui/core/Box";
-import Container from "@material-ui/core/Container";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Button from "@material-ui/core/Button";
-import { makeStyles} from "@material-ui/core/styles";
-import { Link as RouterLink } from "react-router-dom";
 import {images} from "./Assets/imageAlbum"
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import { useMediaQuery } from "@material-ui/core";
-import { useState } from "react";
-import Hidden from "@material-ui/core/Hidden";
-import { useTheme } from "@material-ui/core/styles";
 import Test from "./sideBar"
-import { 
-  SwipeableDrawer,
-  List,
-  ListItem,
-} from "@material-ui/core";
+import { dynamicimports } from "../imports";
+
+ const {
+   makeStyles,
+   List,
+   ListItem,
+   Box,
+   Container,
+   RouterLink,
+   useState,
+   Hidden,
+   IconButton,
+   MenuIcon,
+   useMediaQuery,
+   useTheme,
+   AppBar,
+   Toolbar,
+   Button,
+   SwipeableDrawer,
+ } = dynamicimports;
 const useStyles = makeStyles((theme) => ({
   appBar: {
     backgroundColor: "#fff",
